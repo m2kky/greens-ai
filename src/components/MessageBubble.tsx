@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { Copy, Check, ThumbsUp, ThumbsDown, RotateCcw } from 'lucide-react'
+import { Copy, Check } from 'lucide-react'
 import { Message } from '@/lib/types'
 
 function isArabic(text: string) {
@@ -82,12 +82,6 @@ export default function MessageBubble({ msg }: { msg: Message }) {
             <button onClick={copy} className="action-btn p-1.5 rounded-md" title="نسخ الرد">
               {copied ? <Check size={15} className="text-green-400" /> : <Copy size={15} />}
             </button>
-            <button className="action-btn p-1.5 rounded-md" title="إعادة التوليد">
-              <RotateCcw size={15} />
-            </button>
-            <div className="flex-1" />
-            <button className="action-btn p-1.5 rounded-md" title="تقييم إيجابي"><ThumbsUp size={15} /></button>
-            <button className="action-btn p-1.5 rounded-md" title="تقييم سلبي"><ThumbsDown size={15} /></button>
           </div>
         </div>
       </div>
