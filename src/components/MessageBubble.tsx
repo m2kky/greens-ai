@@ -4,6 +4,9 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { Copy, Check } from 'lucide-react'
 import { Message } from '@/lib/types'
+import ExportMenu from './ExportMenu'
+import ExportToast from './ExportToast'
+import { ExportFormat } from '@/lib/export'
 
 function isArabic(text: string) {
   return /[\u0600-\u06FF]/.test(text)
@@ -21,8 +24,11 @@ function BotAvatar() {
 
 export default function MessageBubble({ msg }: { msg: Message }) {
   const [copied, setCopied] = useState(false)
+  const [exporting, setExporting] = useState<ExportFormat | null>(null)
   const isUser = msg.role === 'user'
   const arabic = isArabic(msg.content)
+
+  const handleExporting = (fmt: ExportFormat | null) => setExporting(fmt)
 
   const copy = () => {
     navigator.clipboard.writeText(msg.content)
@@ -82,7 +88,14 @@ export default function MessageBubble({ msg }: { msg: Message }) {
             <button onClick={copy} className="action-btn p-1.5 rounded-md" title="نسخ الرد">
               {copied ? <Check size={15} className="text-green-400" /> : <Copy size={15} />}
             </button>
+            <ExportMenu
+              title={`رد-${new Date(msg.timestamp).toLocaleDateString('ar-EG')}`}
+              messages={[msg]}
+              onExporting={handleExporting}
+              size="sm"
+            />
           </div>
+          <ExportToast exporting={exporting} />
         </div>
       </div>
     </div>

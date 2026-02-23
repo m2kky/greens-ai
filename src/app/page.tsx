@@ -5,8 +5,11 @@ import { Send, Mic, MicOff } from 'lucide-react'
 import Sidebar from '@/components/Sidebar'
 import MessageBubble from '@/components/MessageBubble'
 import AgentPanel from '@/components/AgentPanel'
+import ExportMenu from '@/components/ExportMenu'
+import ExportToast from '@/components/ExportToast'
 import { Chat, Message } from '@/lib/types'
 import { loadChats, saveChats, createChat, addMessage, deleteChat } from '@/lib/storage'
+import { ExportFormat } from '@/lib/export'
 
 export default function Home() {
   const [chats, setChats] = useState<Chat[]>([])
@@ -14,6 +17,7 @@ export default function Home() {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [chatExporting, setChatExporting] = useState<ExportFormat | null>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
@@ -30,6 +34,8 @@ export default function Home() {
   }, [chats, activeChatId, loading])
 
   const activeChat = chats.find(c => c.id === activeChatId) ?? null
+
+  const handleChatExporting = (fmt: ExportFormat | null) => setChatExporting(fmt)
 
   const handleNew = useCallback(() => {
     const chat = createChat('محادثة جديدة')
@@ -139,7 +145,7 @@ export default function Home() {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#0a0a0a]">
+    <div className="flex h-screen overflow-hidden bg-[#0a0a0a]" dir="ltr">
       <Sidebar
         chats={chats}
         activeChatId={activeChatId}
@@ -156,12 +162,12 @@ export default function Home() {
         <div className="flex items-center gap-3 px-4 py-3 border-b border-zinc-800/50 bg-zinc-950/70 backdrop-blur-md sticky top-0 z-10">
           <button
             onClick={() => setSidebarOpen(o => !o)}
-            className="hidden md:block p-1.5 rounded-lg hover:bg-zinc-800 text-zinc-400"
+            className="p-1.5 rounded-lg hover:bg-zinc-800 text-zinc-400"
           >
             ☰
           </button>
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-zinc-950 border border-green-500/30 flex items-center justify-center p-1.5" style={{boxShadow:'0 0 12px rgba(34,197,94,0.15)'}}>
+            <div className="w-14 h-14 rounded-full bg-zinc-950 border border-green-500/30 flex items-center justify-center p-1.5" style={{boxShadow:'0 0 12px rgba(34,197,94,0.15)'}}>
               <svg viewBox="0 0 100 100" className="w-full h-full">
                 <path d="M 65 35 C 65 50, 55 60, 45 60 C 35 60, 30 55, 28 48 L 32 38 C 42 32, 55 35, 65 35 Z" fill="#22c55e"/>
               </svg>
@@ -174,20 +180,44 @@ export default function Home() {
               </p>
             </div>
           </div>
+          <div className="ml-auto">
+            <ExportMenu
+              title={activeChat?.title ?? 'محادثة'}
+              messages={activeChat?.messages ?? []}
+              onExporting={handleChatExporting}
+            />
+          </div>
         </div>
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto px-4 py-6">
           {!activeChat || activeChat.messages.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center text-center">
+            <div className="h-full flex flex-col items-center justify-center text-center px-4">
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="space-y-3"
+                className="space-y-6 w-full max-w-lg"
               >
-                <div className="text-5xl">🌿</div>
-                <p className="text-2xl font-bold text-gray-300 font-cairo">ابدأ محادثة جديدة</p>
-                <p className="text-gray-500 text-sm font-cairo">مساعد تسويق المكملات الغذائية</p>
+                <div>
+                  <img src="/logo.svg" alt="Greens AI" className="h-40 w-auto mx-auto mb-4" />
+                  <p className="text-zinc-400 text-sm font-cairo">مساعد تسويق المكملات الغذائية</p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {[
+                    'اكتب إعلان لمنتج ماتشا للتركيز والطاقة',
+                    'حلل منتج Omega-3 وأبرز فوائده التسويقية',
+                    'اقترح زوايا إعلانية لمكمل الكولاجين',
+                    'اكتب كابشن انستغرام لمنتج بروتين واي',
+                  ].map((prompt) => (
+                    <button
+                      key={prompt}
+                      onClick={() => setInput(prompt)}
+                      className="text-right px-4 py-3 rounded-xl border border-zinc-800 hover:border-green-500/30 hover:bg-green-500/5 text-zinc-400 hover:text-zinc-200 text-sm font-cairo transition-all"
+                    >
+                      {prompt}
+                    </button>
+                  ))}
+                </div>
               </motion.div>
             </div>
           ) : (
@@ -265,6 +295,7 @@ export default function Home() {
           </div>
         </div>
       </div>
+      <ExportToast exporting={chatExporting} />
     </div>
   )
 }
