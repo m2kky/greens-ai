@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid'
 import { Chat, Message } from './types'
 
 const KEY = 'greens_chats'
@@ -14,7 +15,7 @@ export function saveChats(chats: Chat[]) {
 
 export function createChat(firstMessage: string): Chat {
   return {
-    id: crypto.randomUUID(),
+    id: uuidv4(),
     title: firstMessage.slice(0, 30),
     createdAt: new Date().toISOString(),
     messages: [],

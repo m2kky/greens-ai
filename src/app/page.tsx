@@ -208,7 +208,7 @@ export default function Home() {
             </button>
           </div>
           <p className="text-center text-xs text-gray-700 mt-2 font-cairo">
-            Greens AI · مساعد تسويق المكملات الغذائية
+            Greens AI · بناء بواسطة <span className="text-gray-600">ValueIMS</span> · المهندس Muhammed Mekky
           </p>
         </div>
       </div>
