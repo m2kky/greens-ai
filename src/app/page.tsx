@@ -135,7 +135,7 @@ export default function Home() {
           >
             ☰
           </button>
-          <span className="text-green-500 font-bold font-cairo">🌿 Greens AI</span>
+          <img src="/logo.svg" alt="Greens AI" className="h-10 w-auto" />
         </div>
 
         {/* Messages */}
@@ -208,7 +208,7 @@ export default function Home() {
             </button>
           </div>
           <p className="text-center text-xs text-gray-700 mt-2 font-cairo">
-            Greens AI · بناء بواسطة <span className="text-gray-600">ValueIMS</span> · المهندس Muhammed Mekky
+            Greens AI · بناء بواسطة <span className="text-gray-600">ValueIMS</span> · Eng. Muhammed Mekky
           </p>
         </div>
       </div>

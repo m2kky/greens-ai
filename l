@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bubbleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#10B981" stop-opacity="0.2"/>
+    </linearGradient>
+    
+    <!-- CSS Animations -->
+    <style>
+      @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+      }
+      @keyframes shadow {
+        0%, 100% { transform: scale(1); opacity: 0.15; }
+        50% { transform: scale(0.7); opacity: 0.05; }
+      }
+      @keyframes typing {
+        0%, 60%, 100% { transform: translateY(0); opacity: 0.6; }
+        30% { transform: translateY(-5px); opacity: 1; }
+      }
+      @keyframes twinkle {
+        0%, 100% { opacity: 0.4; transform: scale(0.8); }
+        50% { opacity: 1; transform: scale(1.1); }
+      }
+
+      .floating-bubble { animation: float 4s ease-in-out infinite; }
+      .shadow-anim { 
+        animation: shadow 4s ease-in-out infinite; 
+        transform-origin: center; 
+        transform-box: fill-box;
+      }
+      
+      .dot { transform-origin: center; transform-box: fill-box; }
+      .dot-1 { animation: typing 1.5s infinite ease-in-out; }
+      .dot-2 { animation: typing 1.5s infinite ease-in-out 0.2s; }
+      .dot-3 { animation: typing 1.5s infinite ease-in-out 0.4s; }
+
+      .sparkle { transform-origin: center; transform-box: fill-box; }
+      .sparkle-1 { animation: twinkle 3s ease-in-out infinite; }
+      .sparkle-2 { animation: twinkle 3s ease-in-out infinite 1.5s; }
+
+      @keyframes pulse-anim {
+        0% { transform: scale(0.9); opacity: 0.5; }
+        100% { transform: scale(1.6); opacity: 0; }
+      }
+      .pulse-ring { transform-origin: 145px 110px; }
+      .pulse-1 { animation: pulse-anim 2.5s infinite ease-out; }
+      .pulse-2 { animation: pulse-anim 2.5s infinite ease-out 1.25s; }
+
+      @keyframes text-glow {
+        0%, 100% { filter: drop-shadow(0px 0px 1px rgba(16, 185, 129, 0.1)); }
+        50% { filter: drop-shadow(0px 0px 6px rgba(16, 185, 129, 0.8)); }
+      }
+      .ai-text { animation: text-glow 3s ease-in-out infinite; }
+    </style>
+  </defs>
+
+  <!-- Dynamic Shadow -->
+  <ellipse class="shadow-anim" cx="150" cy="185" rx="45" ry="6" fill="#059669" />
+  
+  <!-- AI Sparkles -->
+  <path class="sparkle sparkle-1" d="M 230 30 Q 230 45 245 45 Q 230 45 230 60 Q 230 45 215 45 Q 230 45 230 30 Z" fill="#10B981"/>
+  <path class="sparkle sparkle-2" d="M 60 75 Q 60 85 70 85 Q 60 85 60 95 Q 60 85 50 85 Q 60 85 60 75 Z" fill="#22C55E"/>
+
+  <!-- Group for the floating animation -->
+  <g class="floating-bubble">
+    <!-- Background AI Pulses -->
+    <circle class="pulse-ring pulse-1" cx="145" cy="110" r="45" fill="none" stroke="#22C55E" stroke-width="2"/>
+    <circle class="pulse-ring pulse-2" cx="145" cy="110" r="45" fill="none" stroke="#22C55E" stroke-width="2"/>
+
+    <!-- Improved organic path: Leaf tip at top-right, chat bubble tail at bottom-left -->
+    <path d="M 210 80
+             C 210 130, 180 165, 150 165
+             C 120 165, 100 150, 90 135
+             L 70 155
+             L 80 120
+             C 70 95, 85 65, 115 55
+             C 155 40, 190 55, 210 80 Z"
+          fill="#22C55E"
+          stroke="url(#bubbleGrad)"
+          stroke-width="2"
+          stroke-linejoin="round"
+          stroke-linecap="round"/>
+
+    <!-- Digital Leaf Vein (Tech Circuit Style) -->
+    <path d="M 85 140 L 110 140 L 125 125" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.25"/>
+    <circle cx="125" cy="125" r="2" fill="#ffffff" opacity="0.4"/>
+
+    <!-- Animated Chat Dots -->
+    <circle class="dot dot-1" cx="120" cy="110" r="5" fill="#ffffff" />
+    <circle class="dot dot-2" cx="145" cy="110" r="5" fill="#ffffff" />
+    <circle class="dot dot-3" cx="170" cy="110" r="5" fill="#ffffff" />
+  </g>
+        
+  <!-- Improved typography contrast: Thinner weight and lighter color for "AI" -->
+  <text x="150" y="240" font-family="Inter, sans-serif" text-anchor="middle">
+    <tspan font-size="32" font-weight="700" fill="#059669">Greens</tspan>
+    <tspan class="ai-text" font-size="24" font-weight="400" fill="#10B981" dx="6">AI</tspan>
+  </text>
+</svg>
