@@ -34,8 +34,8 @@ export default function Sidebar({ chats, activeChatId, onSelect, onNew, onDelete
             className="fixed md:relative z-40 flex flex-col w-[260px] h-full bg-[#111111] border-r border-gray-800 shrink-0"
           >
             {/* Logo */}
-            <div className="p-4 border-b border-gray-800">
-              <span className="text-lg font-bold text-green-500 font-cairo">🌿 Greens AI</span>
+            <div className="p-4 border-b border-gray-800 flex justify-center">
+              <img src="/logo.svg" alt="Greens AI" className="h-16 w-auto" />
             </div>
 
             {/* New Chat */}
