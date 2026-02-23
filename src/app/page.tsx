@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion } from 'framer-motion'
-import { Send } from 'lucide-react'
+import { Send, Mic, MicOff } from 'lucide-react'
 import Sidebar from '@/components/Sidebar'
 import MessageBubble from '@/components/MessageBubble'
 import AgentPanel from '@/components/AgentPanel'
@@ -51,6 +51,31 @@ export default function Home() {
     saveChats(updated)
     if (activeChatId === id) setActiveChatId(updated.length > 0 ? updated[updated.length - 1].id : null)
   }, [chats, activeChatId])
+
+  const [listening, setListening] = useState(false)
+  const recognitionRef = useRef<any>(null)
+
+  const toggleVoice = useCallback(() => {
+    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+    if (!SR) return
+    if (listening) {
+      recognitionRef.current?.stop()
+      setListening(false)
+      return
+    }
+    const rec = new SR()
+    rec.lang = 'ar-SA'
+    rec.interimResults = false
+    rec.onresult = (e: any) => {
+      const transcript = e.results[0][0].transcript
+      setInput(prev => prev + transcript)
+    }
+    rec.onend = () => setListening(false)
+    rec.onerror = () => setListening(false)
+    rec.start()
+    recognitionRef.current = rec
+    setListening(true)
+  }, [listening])
 
   const handleSend = async () => {
     const text = input.trim()
@@ -214,8 +239,18 @@ export default function Home() {
                 style={{ minHeight: '52px' }}
               />
               <div className="flex justify-between items-center px-2 pb-1 pt-2 border-t border-zinc-800/50">
-                <div className="text-xs text-zinc-600">
-                  Greens AI · <span className="text-zinc-700">ValueIMS</span> · Eng. Muhammed Mekky
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={toggleVoice}
+                    className={`p-2 rounded-lg transition-colors ${
+                      listening
+                        ? 'text-red-400 bg-red-500/10 animate-pulse'
+                        : 'text-zinc-400 hover:text-green-400 hover:bg-zinc-800'
+                    }`}
+                    title="إدخال صوتي"
+                  >
+                    {listening ? <MicOff size={18} /> : <Mic size={18} />}
+                  </button>
                 </div>
                 <button
                   onClick={handleSend}
