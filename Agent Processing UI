@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greens AI - Dynamic Processing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', 'Cairo', sans-serif;
+            background-color: #050505; /* خلفية داكنة جداً */
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #ffffff;
+        }
+
+        /* Glassmorphism Card */
+        .glass-card {
+            background: linear-gradient(145deg, rgba(24, 24, 27, 0.8), rgba(9, 9, 11, 0.9));
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(34, 197, 94, 0.1);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        /* Core AI Animations */
+        @keyframes spin-cw { 100% { transform: rotate(360deg); } }
+        @keyframes spin-ccw { 100% { transform: rotate(-360deg); } }
+        @keyframes pulse-core {
+            0%, 100% { transform: scale(0.95); opacity: 0.8; filter: drop-shadow(0 0 10px #22c55e); }
+            50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 25px #22c55e); }
+        }
+
+        .ring-outer { animation: spin-cw 8s linear infinite; transform-origin: center; }
+        .ring-inner { animation: spin-ccw 5s linear infinite; transform-origin: center; }
+        .core-glow { animation: pulse-core 2s ease-in-out infinite; transform-origin: center; }
+
+        /* Text Transitions */
+        .content-transition {
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .fade-out {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        .fade-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Gradient Text */
+        .text-gradient {
+            background: linear-gradient(to right, #4ade80, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="p-4">
+
+    <!-- Container -->
+    <div class="glass-card w-full max-w-sm rounded-3xl p-8 relative overflow-hidden flex flex-col items-center text-center">
+        
+        <!-- Status Badge -->
+        <div class="mb-8 flex items-center gap-2 bg-green-500/10 border border-green-500/20 px-3 py-1.5 rounded-full">
+            <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+            <span class="text-green-500 text-xs font-mono font-medium tracking-wider" dir="ltr">MULTI_AGENT_SYNC</span>
+        </div>
+
+        <!-- AI Core Animation (SVG) -->
+        <div class="relative w-32 h-32 mb-8">
+            <svg viewBox="0 0 100 100" class="w-full h-full">
+                <!-- Outer Dashed Ring -->
+                <circle class="ring-outer" cx="50" cy="50" r="46" fill="none" stroke="#22c55e" stroke-width="1" stroke-dasharray="8 6" opacity="0.3"/>
+                <!-- Inner Track Ring -->
+                <circle class="ring-inner" cx="50" cy="50" r="38" fill="none" stroke="#10b981" stroke-width="2" stroke-dasharray="30 15 10 15" opacity="0.6"/>
+                <!-- Center Core (Greens AI Leaf abstract) -->
+                <path class="core-glow" d="M 65 35 C 65 50, 55 60, 45 60 C 35 60, 30 55, 28 48 L 32 38 C 42 32, 55 35, 65 35 Z" fill="#22c55e"/>
+            </svg>
+        </div>
+
+        <!-- Dynamic Content Area -->
+        <div id="dynamic-content" class="content-transition w-full h-24 flex flex-col justify-center mb-6">
+            <div class="text-xs text-zinc-500 font-mono mb-2 tracking-widest uppercase" id="agent-id" dir="ltr">AGENT 01</div>
+            <h3 class="text-xl font-bold text-white mb-2 font-['Inter']" id="agent-title" dir="ltr">Product Evidence</h3>
+            <p class="text-sm text-zinc-400 font-['Cairo']" id="agent-desc">يتم فحص وتحليل بيانات المنتج...</p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="w-full">
+            <div class="flex justify-between text-xs text-zinc-500 mb-2 font-mono" dir="ltr">
+                <span id="progress-text">0%</span>
+                <span>100%</span>
+            </div>
+            <div class="w-full bg-zinc-800 rounded-full h-1.5 overflow-hidden">
+                <div id="progress-bar" class="bg-gradient-to-r from-green-500 to-emerald-400 h-full rounded-full transition-all duration-700 ease-out" style="width: 0%"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JavaScript for Dynamic Updates -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Data for the agents (You can replace this with real data from n8n)
+            const agentsData = [
+                { id: "AGENT 01", title: "Product Evidence", desc: "يتم فحص وتحليل بيانات المنتج واستخراج المميزات..." },
+                { id: "AGENT 02", title: "Market Intelligence", desc: "جاري دراسة السوق وتحليل استراتيجيات المنافسين..." },
+                { id: "AGENT 03", title: "Consumer Psychology", desc: "تحليل سيكولوجية المستهلك المستهدف والدوافع الشرائية..." },
+                { id: "AGENT 04", title: "Trend & Virality", desc: "رصد التريندات الحالية وفرص الانتشار السريع..." },
+                { id: "AGENT 05", title: "Content Strategy", desc: "بناء استراتيجية المحتوى والزوايا الإعلانية الأفضل..." },
+                { id: "AGENT 06", title: "Copywriter", desc: "صياغة النصوص الإعلانية الجذابة والمقنعة..." },
+                { id: "AGENT 07", title: "Compliance", desc: "مراجعة توافق المحتوى مع سياسات منصات الإعلان..." },
+                { id: "AGENT 08", title: "Ops & QA", desc: "المراجعة النهائية وتنسيق المخرجات بجودة عالية..." }
+            ];
+
+            const contentContainer = document.getElementById('dynamic-content');
+            const elId = document.getElementById('agent-id');
+            const elTitle = document.getElementById('agent-title');
+            const elDesc = document.getElementById('agent-desc');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+            
+            let currentIndex = 0;
+            const totalSteps = agentsData.length;
+
+            function updateUI(index) {
+                // 1. Fade out current content
+                contentContainer.classList.add('fade-out');
+                
+                setTimeout(() => {
+                    // 2. Update text content while invisible
+                    const data = agentsData[index];
+                    elId.innerText = data.id;
+                    elTitle.innerText = data.title;
+                    elDesc.innerText = data.desc;
+
+                    // 3. Fade in new content
+                    contentContainer.classList.remove('fade-out');
+                    
+                    // 4. Update Progress Bar
+                    const progressPercentage = Math.round(((index + 1) / totalSteps) * 100);
+                    progressBar.style.width = `${progressPercentage}%`;
+                    progressText.innerText = `${progressPercentage}%`;
+
+                }, 400); // Wait for fade out transition (0.4s)
+            }
+
+            function processNextAgent() {
+                if (currentIndex < totalSteps) {
+                    updateUI(currentIndex);
+                    currentIndex++;
+                    
+                    // Random delay to simulate AI thinking (between 2 to 4 seconds per agent)
+                    if(currentIndex < totalSteps) {
+                        const thinkingTime = Math.random() * 2000 + 2000;
+                        setTimeout(processNextAgent, thinkingTime);
+                    } else {
+                        // Finished state
+                        setTimeout(() => {
+                            contentContainer.classList.add('fade-out');
+                            setTimeout(() => {
+                                elId.innerText = "SYSTEM_READY";
+                                elId.classList.add('text-green-500');
+                                elTitle.innerText = "اكتمل التحليل";
+                                elTitle.classList.add('text-gradient');
+                                elTitle.setAttribute('dir', 'rtl');
+                                elDesc.innerText = "تم إنجاز مهام جميع الوكلاء بنجاح.";
+                                contentContainer.classList.remove('fade-out');
+                                
+                                // Stop the animations
+                                document.querySelector('.ring-outer').style.animationPlayState = 'paused';
+                                document.querySelector('.ring-inner').style.animationPlayState = 'paused';
+                            }, 400);
+                        }, 2500);
+                    }
+                }
+            }
+
+            // Start the process slightly after load
+            setTimeout(processNextAgent, 500);
+        });
+    </script>
+</body>
+</html>
