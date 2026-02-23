@@ -1,0 +1,103 @@
+2026-Feb-23 20:07:05.988976 Starting deployment of m2kky/greens-ai:main to localhost.
+2026-Feb-23 20:07:06.658111 Preparing container with helper image: ghcr.io/coollabsio/coolify-helper:1.0.12
+2026-Feb-23 20:07:07.011904 [DEBUG] [CMD]: docker stop -t 30 vwss444gksw8ggsooc4w8kg0
+2026-Feb-23 20:07:07.011904 [DEBUG] Error response from daemon: No such container: vwss444gksw8ggsooc4w8kg0
+2026-Feb-23 20:07:07.457709 [DEBUG] [CMD]: docker run -d --network coolify --name vwss444gksw8ggsooc4w8kg0  --rm -v /var/run/docker.sock:/var/run/docker.sock ghcr.io/coollabsio/coolify-helper:1.0.12
+2026-Feb-23 20:07:07.457709 [DEBUG] c445cf03a5ccd6cb30c36274339802af96e1c12d5fab0722c761727647801bf4
+2026-Feb-23 20:07:10.280425 [DEBUG] [CMD]: docker exec vwss444gksw8ggsooc4w8kg0 bash -c 'GIT_SSH_COMMAND="ssh -o ConnectTimeout=30 -p 22 -o Port=22 -o LogLevel=ERROR -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" git ls-remote https://x-access-token:<REDACTED>@github.com/m2kky/greens-ai.git refs/heads/main'
+2026-Feb-23 20:07:10.280425 [DEBUG] 1f1e73ab262ef14915114bca859935a84232df78	refs/heads/main
+2026-Feb-23 20:07:10.490137 ----------------------------------------
+2026-Feb-23 20:07:10.495501 Importing m2kky/greens-ai:main (commit sha 1f1e73ab262ef14915114bca859935a84232df78) to /artifacts/vwss444gksw8ggsooc4w8kg0.
+2026-Feb-23 20:07:10.885768 [DEBUG] [CMD]: docker exec vwss444gksw8ggsooc4w8kg0 bash -c 'git clone --depth=1 --recurse-submodules --shallow-submodules -b 'main' 'https://x-access-token:<REDACTED>@github.com/m2kky/greens-ai.git' '/artifacts/vwss444gksw8ggsooc4w8kg0' && cd '/artifacts/vwss444gksw8ggsooc4w8kg0' && if [ -f .gitmodules ]; then git submodule sync && GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" git submodule update --init --recursive --depth=1; fi && cd '/artifacts/vwss444gksw8ggsooc4w8kg0' && GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" git lfs pull'
+2026-Feb-23 20:07:10.885768 [DEBUG] Cloning into '/artifacts/vwss444gksw8ggsooc4w8kg0'...
+2026-Feb-23 20:07:12.604321 [DEBUG] [CMD]: docker exec vwss444gksw8ggsooc4w8kg0 bash -c 'cd /artifacts/vwss444gksw8ggsooc4w8kg0 && git log -1 1f1e73ab262ef14915114bca859935a84232df78 --pretty=%B'
+2026-Feb-23 20:07:12.604321 [DEBUG] fix: move build deps to dependencies for production build
+2026-Feb-23 20:07:13.052395 [DEBUG] [CMD]: docker images -q ewg8ckg80048oo0go04kswog:1f1e73ab262ef14915114bca859935a84232df78 2>/dev/null
+2026-Feb-23 20:07:13.052395 [DEBUG] c9d3db6e623b
+2026-Feb-23 20:07:13.060087 No configuration changed & image found (ewg8ckg80048oo0go04kswog:1f1e73ab262ef14915114bca859935a84232df78) with the same Git Commit SHA. Build step skipped.
+2026-Feb-23 20:07:14.301999 [DEBUG] [CMD]: docker exec vwss444gksw8ggsooc4w8kg0 bash -c 'cat /artifacts/vwss444gksw8ggsooc4w8kg0/Dockerfile'
+2026-Feb-23 20:07:14.301999 [DEBUG] FROM node:20-alpine AS deps
+2026-Feb-23 20:07:14.301999 [DEBUG] WORKDIR /app
+2026-Feb-23 20:07:14.301999 [DEBUG] COPY package.json package-lock.json* ./
+2026-Feb-23 20:07:14.301999 [DEBUG] RUN npm ci --legacy-peer-deps
+2026-Feb-23 20:07:14.301999 [DEBUG] 
+2026-Feb-23 20:07:14.301999 [DEBUG] FROM node:20-alpine AS builder
+2026-Feb-23 20:07:14.301999 [DEBUG] WORKDIR /app
+2026-Feb-23 20:07:14.301999 [DEBUG] COPY --from=deps /app/node_modules ./node_modules
+2026-Feb-23 20:07:14.301999 [DEBUG] COPY . .
+2026-Feb-23 20:07:14.301999 [DEBUG] ENV NEXT_TELEMETRY_DISABLED=1
+2026-Feb-23 20:07:14.301999 [DEBUG] RUN npm run build
+2026-Feb-23 20:07:14.301999 [DEBUG] 
+2026-Feb-23 20:07:14.301999 [DEBUG] FROM node:20-alpine AS runner
+2026-Feb-23 20:07:14.301999 [DEBUG] WORKDIR /app
+2026-Feb-23 20:07:14.301999 [DEBUG] ENV NODE_ENV=production
+2026-Feb-23 20:07:14.301999 [DEBUG] ENV NEXT_TELEMETRY_DISABLED=1
+2026-Feb-23 20:07:14.301999 [DEBUG] RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
+2026-Feb-23 20:07:14.301999 [DEBUG] RUN mkdir -p ./public
+2026-Feb-23 20:07:14.301999 [DEBUG] COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+2026-Feb-23 20:07:14.301999 [DEBUG] COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+2026-Feb-23 20:07:14.301999 [DEBUG] USER nextjs
+2026-Feb-23 20:07:14.301999 [DEBUG] EXPOSE 3000
+2026-Feb-23 20:07:14.301999 [DEBUG] ENV PORT=3000
+2026-Feb-23 20:07:14.301999 [DEBUG] ENV HOSTNAME=0.0.0.0
+2026-Feb-23 20:07:14.301999 [DEBUG] HEALTHCHECK --interval=30s --timeout=5s --start-period=10s \
+2026-Feb-23 20:07:14.301999 [DEBUG] CMD wget -qO- http://localhost:3000/api/health || exit 1
+2026-Feb-23 20:07:14.301999 [DEBUG] CMD ["node", "server.js"]
+2026-Feb-23 20:07:14.731431 [DEBUG] Creating .env file with runtime variables for container.
+2026-Feb-23 20:07:15.554556 ----------------------------------------
+2026-Feb-23 20:07:15.577844 Rolling update started.
+2026-Feb-23 20:07:16.619477 [DEBUG] [CMD]: docker exec vwss444gksw8ggsooc4w8kg0 bash -c 'COOLIFY_URL=http://greenschat.muhammedmekky.com COOLIFY_FQDN=greenschat.muhammedmekky.com COOLIFY_BRANCH=main COOLIFY_RESOURCE_UUID=ewg8ckg80048oo0go04kswog  docker compose --project-name ewg8ckg80048oo0go04kswog --project-directory /artifacts/vwss444gksw8ggsooc4w8kg0 -f /artifacts/vwss444gksw8ggsooc4w8kg0/docker-compose.yaml up --build -d'
+2026-Feb-23 20:07:16.619477 [DEBUG] Container ewg8ckg80048oo0go04kswog-200704508415  Creating
+2026-Feb-23 20:07:16.674872 [DEBUG] ewg8ckg80048oo0go04kswog-200704508415 Your kernel does not support memory swappiness capabilities or the cgroup is not mounted. Memory swappiness discarded.
+2026-Feb-23 20:07:16.677930 [DEBUG] Container ewg8ckg80048oo0go04kswog-200704508415  Created
+2026-Feb-23 20:07:16.677930 [DEBUG] Container ewg8ckg80048oo0go04kswog-200704508415  Starting
+2026-Feb-23 20:07:16.881792 [DEBUG] Container ewg8ckg80048oo0go04kswog-200704508415  Started
+2026-Feb-23 20:07:16.908815 New container started.
+2026-Feb-23 20:07:16.915888 Custom healthcheck found in Dockerfile.
+2026-Feb-23 20:07:16.920164 Waiting for healthcheck to pass on the new container.
+2026-Feb-23 20:07:16.924099 Waiting for the start period (10 seconds) before starting healthcheck.
+2026-Feb-23 20:07:27.387011 [DEBUG] [CMD]: docker inspect --format='{{json .State.Health.Status}}' ewg8ckg80048oo0go04kswog-200704508415
+2026-Feb-23 20:07:27.387011 [DEBUG] "starting"
+2026-Feb-23 20:07:27.882816 [DEBUG] [CMD]: docker inspect --format='{{json .State.Health.Log}}' ewg8ckg80048oo0go04kswog-200704508415
+2026-Feb-23 20:07:27.882816 [DEBUG] [{"Start":"2026-02-23T20:07:21.880682929Z","End":"2026-02-23T20:07:21.927836913Z","ExitCode":1,"Output":"wget: can't connect to remote host: Connection refused\n"},{"Start":"2026-02-23T20:07:26.929238111Z","End":"2026-02-23T20:07:27.016760842Z","ExitCode":1,"Output":"wget: can't connect to remote host: Connection refused\n"}]
+2026-Feb-23 20:07:27.908109 Attempt 1 of 10 | Healthcheck status: "starting"
+2026-Feb-23 20:07:27.946000 Healthcheck logs: wget: can't connect to remote host: Connection refused
+2026-Feb-23 20:07:27.946000 | Return code: 1
+2026-Feb-23 20:07:58.372203 [DEBUG] [CMD]: docker inspect --format='{{json .State.Health.Status}}' ewg8ckg80048oo0go04kswog-200704508415
+2026-Feb-23 20:07:58.372203 [DEBUG] "starting"
+2026-Feb-23 20:07:58.887288 [DEBUG] [CMD]: docker inspect --format='{{json .State.Health.Log}}' ewg8ckg80048oo0go04kswog-200704508415
+2026-Feb-23 20:07:58.887288 [DEBUG] [{"Start":"2026-02-23T20:07:21.880682929Z","End":"2026-02-23T20:07:21.927836913Z","ExitCode":1,"Output":"wget: can't connect to remote host: Connection refused\n"},{"Start":"2026-02-23T20:07:26.929238111Z","End":"2026-02-23T20:07:27.016760842Z","ExitCode":1,"Output":"wget: can't connect to remote host: Connection refused\n"},{"Start":"2026-02-23T20:07:57.01801646Z","End":"2026-02-23T20:07:57.085797612Z","ExitCode":1,"Output":"wget: can't connect to remote host: Connection refused\n"}]
+2026-Feb-23 20:07:58.904621 Attempt 2 of 10 | Healthcheck status: "starting"
+2026-Feb-23 20:07:58.916679 Healthcheck logs: wget: can't connect to remote host: Connection refused
+2026-Feb-23 20:07:58.916679 | Return code: 1
+2026-Feb-23 20:08:30.084220 [DEBUG] [CMD]: docker inspect --format='{{json .State.Health.Status}}' ewg8ckg80048oo0go04kswog-200704508415
+2026-Feb-23 20:08:30.084220 [DEBUG] "unhealthy"
+2026-Feb-23 20:08:30.439711 [DEBUG] [CMD]: docker inspect --format='{{json .State.Health.Log}}' ewg8ckg80048oo0go04kswog-200704508415
+2026-Feb-23 20:08:30.439711 [DEBUG] [{"Start":"2026-02-23T20:07:21.880682929Z","End":"2026-02-23T20:07:21.927836913Z","ExitCode":1,"Output":"wget: can't connect to remote host: Connection refused\n"},{"Start":"2026-02-23T20:07:26.929238111Z","End":"2026-02-23T20:07:27.016760842Z","ExitCode":1,"Output":"wget: can't connect to remote host: Connection refused\n"},{"Start":"2026-02-23T20:07:57.01801646Z","End":"2026-02-23T20:07:57.085797612Z","ExitCode":1,"Output":"wget: can't connect to remote host: Connection refused\n"},{"Start":"2026-02-23T20:08:27.086860013Z","End":"2026-02-23T20:08:27.135905234Z","ExitCode":1,"Output":"wget: can't connect to remote host: Connection refused\n"}]
+2026-Feb-23 20:08:30.447274 Attempt 3 of 10 | Healthcheck status: "unhealthy"
+2026-Feb-23 20:08:30.456045 Healthcheck logs: wget: can't connect to remote host: Connection refused
+2026-Feb-23 20:08:30.456045 | Return code: 1
+2026-Feb-23 20:08:30.460733 New container is unhealthy.
+2026-Feb-23 20:08:30.469573 ----------------------------------------
+2026-Feb-23 20:08:30.477814 Container logs:
+2026-Feb-23 20:08:30.846221 [CMD]: docker logs -n 100 ewg8ckg80048oo0go04kswog-200704508415
+2026-Feb-23 20:08:30.846221 ▲ Next.js 14.2.5
+2026-Feb-23 20:08:30.846221 - Local:        http://localhost:3000
+2026-Feb-23 20:08:30.851040 - Network:      http://0.0.0.0:3000
+2026-Feb-23 20:08:30.851040 
+2026-Feb-23 20:08:30.851040 ✓ Starting...
+2026-Feb-23 20:08:30.851040 ✓ Ready in 227ms
+2026-Feb-23 20:08:30.857287 ----------------------------------------
+2026-Feb-23 20:08:30.864538 Removing old containers.
+2026-Feb-23 20:08:30.869347 ----------------------------------------
+2026-Feb-23 20:08:30.877330 WARNING: Dockerfile or Docker Image based deployment detected. The healthcheck needs a curl or wget command to check the health of the application. Please make sure that it is available in the image or turn off healthcheck on Coolify's UI.
+2026-Feb-23 20:08:30.881774 ----------------------------------------
+2026-Feb-23 20:08:30.889102 New container is not healthy, rolling back to the old container.
+2026-Feb-23 20:08:31.465097 [DEBUG] [CMD]: docker stop -t 30 ewg8ckg80048oo0go04kswog-200704508415
+2026-Feb-23 20:08:31.465097 [DEBUG] ewg8ckg80048oo0go04kswog-200704508415
+2026-Feb-23 20:08:31.895843 [DEBUG] [CMD]: docker rm -f ewg8ckg80048oo0go04kswog-200704508415
+2026-Feb-23 20:08:31.895843 [DEBUG] ewg8ckg80048oo0go04kswog-200704508415
+2026-Feb-23 20:08:31.902172 Rolling update completed.
+2026-Feb-23 20:08:33.073104 Gracefully shutting down build container: vwss444gksw8ggsooc4w8kg0
+2026-Feb-23 20:08:33.583759 [DEBUG] [CMD]: docker stop -t 30 vwss444gksw8ggsooc4w8kg0
+2026-Feb-23 20:08:33.583759 [DEBUG] vwss444gksw8ggsooc4w8kg0
