@@ -1,7 +1,8 @@
 'use client'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, Trash2, X, Menu } from 'lucide-react'
+import { Plus, Trash2, Upload } from 'lucide-react'
 import { Chat } from '@/lib/types'
+import Link from 'next/link'
 
 interface Props {
   chats: Chat[]
@@ -69,7 +70,14 @@ export default function Sidebar({ chats, activeChatId, onSelect, onNew, onDelete
             </div>
 
             {/* Footer */}
-            <div className="p-3 border-t border-zinc-800/60">
+            <div className="p-3 border-t border-zinc-800/60 space-y-2">
+              <Link
+                href="/upload"
+                className="flex items-center gap-2 px-3 py-2 rounded-xl text-zinc-500 hover:text-green-400 hover:bg-zinc-800 transition-all text-xs font-cairo"
+              >
+                <Upload size={13} className="text-green-500" />
+                رفع بيانات RAG
+              </Link>
               <p className="text-[10px] text-zinc-700 text-center font-cairo">
                 ValueIMS · Eng. Muhammed Mekky
               </p>
